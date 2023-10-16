@@ -5,7 +5,7 @@ export class AdminController {
 
     @Get()
     create(){
-        return "Hello!";
+        return "Hello-HHH!";
     }
 
 }
