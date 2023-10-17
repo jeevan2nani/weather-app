@@ -9,8 +9,13 @@ import { Admin } from './admin/admin.entity';
 @Module({
   imports: [AdminModule, TypeOrmModule.forRoot(
     {
-      type:'sqlite',
-      database:'db.sqlite',
+      type:'postgres',
+      host:'localhost',
+      port:5432,
+      password:'Jeevan2nani',
+      username:'postgres',
+
+      database:'postgres',
       entities:[City,Admin],
       synchronize:true,
     }
