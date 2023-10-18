@@ -13,15 +13,15 @@ export class UserService {
         const Citynames = await this.adminService.FindAll();
         console.log(typeof(Citynames));
 
-        const weather_data = []; 
+        const weather_data = new Map(); 
 
         for(const city of Citynames){
 
-            const URL = `https://api.openweathermap.org/data/2.5/weather?q=${city.name}&appid=${API_KEY}`;
+            const URL = `https://api.openweathermap.org/data/2.5/weather?q=${city.name}&appid=${API_KEY}&units=metric`;
 
             const response = await axios.get(URL);
 
-            weather_data.push(response.data);
+            weather_data[city.name] = response.data.main;
 
         }
 
