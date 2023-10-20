@@ -1,6 +1,7 @@
-import { Get,Body, Controller, Post, Session, BadRequestException } from '@nestjs/common';
+import { Get,Body, Controller, Post, Session, BadRequestException, Req } from '@nestjs/common';
 import { CitiesDto } from './dtos/cities.dto';
 import { AdminService } from './admin.service';
+import { Request } from 'express'
 
 @Controller('admin')
 export class AdminController {
@@ -17,27 +18,33 @@ export class AdminController {
     //SignIn
 
     @Post('/signin')
-    async signin(@Body() body:any, @Session() session:any){
+    async signin(@Body() body:any, @Req() req: Request){
         const admin = await this.adminService.signin(body.email,body.password);
         if(admin) {
-            session.userId = admin.id;
+           req.session.userId = admin.id;
+            console.log(req.session.userId);
+            if(req.session.userId === undefined){
+                console.log("Check");
+            }
         }
+        console.log(admin);
         return admin;
     }
 
     //Signout
     @Post('/signout')
-    signout(@Session() session:any){
-        session.userId = null;
+    signout(@Req() req:Request){
+        req.session.userId = undefined;
         return "Logged Out Successfully";
     }
 
 
     @Post('/add')
-    async addCity(@Body() body:CitiesDto, @Session() session:any){
+    async addCity(@Body() body:CitiesDto, @Req() req:Request){
 
         console.log(body);
-        if(session.userId === null){
+        console.log(req.session.userId);
+        if(req.session.userId === undefined ){
             return new BadRequestException("Please login as Admin to Access this");
         }
         return this.adminService.AddCity(body.name);
