@@ -10,9 +10,20 @@ export class AdminService {
     constructor(@InjectRepository(City) private repo : Repository<City> , @InjectRepository(Admin) private adminRepo: Repository<Admin>,){};
 
     async AddCity(name:string){
+        const iscity = await this.FindCity(name);
+        console.log(iscity);
+        if(iscity === name){
+            console.log(`City name is : ${iscity}`);
+            return "City is already there in the Database!";
+        }
         const city = await this.repo.create({name});
         this.repo.save(city);
         return " City is added to the DB";
+    }
+    async FindCity(name:string){
+        const city = await this.repo.find({where:{name:name}});
+        // console.log(city);
+        return city[0].name;
     }
     async FindAll(){
         const cities =  await this.repo.find();
