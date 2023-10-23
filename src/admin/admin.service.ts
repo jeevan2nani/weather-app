@@ -31,7 +31,7 @@ export class AdminService {
             return user;
         }
 
-        if(user.password !== user.password){
+        if(user.password !== password){
             return null;
         }
 
