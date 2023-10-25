@@ -3,6 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { City } from './admin.cities.entity';
 import { Admin } from './admin.entity';
+import { scrypt  as _scrypt, randomBytes } from 'crypto';
+import { promisify } from 'util';
+
+const scrypt = promisify(_scrypt);
 
 @Injectable()
 export class AdminService {
@@ -30,7 +34,11 @@ export class AdminService {
         return cities;
     }
 
-    createUser(email:string,password:string){
+    async createUser(email:string,password:string){
+        const salt = randomBytes(8).toString('hex');
+        const hash = (await scrypt(password,salt,32)) as Buffer;
+        const result = salt + '.'+hash.toString('hex');
+        password= result;
         const user = this.adminRepo.create({email,password});
         this.adminRepo.save(user);
         return user;
@@ -41,8 +49,9 @@ export class AdminService {
         if(!user){
             return user;
         }
-
-        if(user.password !== password){
+        const [salt,storedHash] = user.password.split('.');
+        const hash = (await scrypt(password,salt,32)) as Buffer;
+        if(storedHash !== hash.toString('hex')){
             return null;
         }
 
