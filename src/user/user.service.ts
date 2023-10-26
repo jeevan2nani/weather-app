@@ -1,14 +1,16 @@
 import { Injectable} from '@nestjs/common';
 import axios from 'axios';
 import { AdminService } from 'src/admin/admin.service';
-
+import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class UserService {
     
-    constructor(private adminService: AdminService){};
+    constructor(private adminService: AdminService,
+        private readonly configService: ConfigService){};
 
     async getWeather(){
-        const API_KEY = "2dd7d568e233080f1d1259ebb1818ece";
+        // use configuration
+        const API_KEY = this.getApiKey();
 
         const Citynames = await this.adminService.FindAll();
         console.log(typeof(Citynames));
@@ -30,5 +32,8 @@ export class UserService {
 
         return weather_data;
 
+    }
+    getApiKey(): string{
+        return this.configService.get<string>('API_KEY');
     }
 }

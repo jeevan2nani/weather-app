@@ -18,11 +18,12 @@ export class AdminService {
         console.log(iscity);
         if(iscity === name){
             console.log(`City name is : ${iscity}`);
-            return "City is already there in the Database!";
+            // Convert to Json
+            return {"Message":"City is already there in the Database!"};
         }
         const city = await this.repo.create({name});
         this.repo.save(city);
-        return " City is added to the DB";
+        return {"Message":" City is added to the DB"};
     }
     async FindCity(name:string){
         const city = await this.repo.find({where:{name:name}});
@@ -33,7 +34,7 @@ export class AdminService {
         const cities =  await this.repo.find();
         return cities;
     }
-
+    // Adding Auth to signup
     async createUser(email:string,password:string){
         const salt = randomBytes(8).toString('hex');
         const hash = (await scrypt(password,salt,32)) as Buffer;

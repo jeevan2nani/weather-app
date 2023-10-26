@@ -1,7 +1,8 @@
-import { Get,Body, Controller, Post, Session, BadRequestException, Req } from '@nestjs/common';
+import { Get,Body, Controller, Post, Session, BadRequestException, Req, UnauthorizedException } from '@nestjs/common';
 import { CitiesDto } from './dtos/cities.dto';
 import { AdminService } from './admin.service';
 import { Request } from 'express'
+import AdminDto from './dtos/admin.dto';
 
 @Controller('admin')
 export class AdminController {
@@ -11,14 +12,17 @@ export class AdminController {
     // SignUp
 
     @Post('/signup')
-    signup(@Body() body:any ){
+    signup(@Body() body:AdminDto , @Req() req:Request){
+        if(req.session.userId === undefined){
+            return {"Message":"Only Admins can Access this"};
+        }
         return this.adminService.createUser(body.email,body.password);
     }
 
     //SignIn
-
+    // Add DTO for Sign in,Signup  -> Done
     @Post('/signin')
-    async signin(@Body() body:any, @Req() req: Request){
+    async signin(@Body() body:AdminDto, @Req() req: Request){
         const admin = await this.adminService.signin(body.email,body.password);
         if(admin) {
            req.session.userId = admin.id;
@@ -35,7 +39,7 @@ export class AdminController {
     @Post('/signout')
     signout(@Req() req:Request){
         req.session.userId = undefined;
-        return "Logged Out Successfully";
+        return {"Message":"Logged Out Successfully"};
     }
 
 

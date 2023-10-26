@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { City } from './admin/admin.cities.entity';
 import { UserModule } from './user/user.module';
 import { Admin } from './admin/admin.entity';
+import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [AdminModule, TypeOrmModule.forRoot(
     {
@@ -19,7 +20,11 @@ import { Admin } from './admin/admin.entity';
       entities:[City,Admin],
       synchronize:true,
     }
-  ), UserModule],
+  ),
+  ConfigModule.forRoot({
+    envFilePath:'.env',
+    isGlobal:true,
+  }), UserModule],
   controllers: [AppController],
   providers: [AppService],
 })
