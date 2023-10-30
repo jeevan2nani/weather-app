@@ -14,6 +14,7 @@ export class AdminService {
     constructor(@InjectRepository(City) private repo : Repository<City> , @InjectRepository(Admin) private adminRepo: Repository<Admin>,){};
 
     async AddCity(name:string){
+        console.log(name)
         const iscity = await this.FindCity(name);
         console.log(iscity);
         if(iscity === name){
@@ -32,6 +33,7 @@ export class AdminService {
     }
     async FindAll(){
         const cities =  await this.repo.find();
+        console.log(cities);
         return cities;
     }
     // Adding Auth to signup

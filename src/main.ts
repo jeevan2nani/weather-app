@@ -3,7 +3,6 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import * as session from 'express-session';
 import * as cookieParser from 'cookie-parser';
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe);
@@ -14,6 +13,8 @@ async function bootstrap() {
       saveUninitialized: false,
     })
   );
+  console.log(`SESSION_SECRET: ${process.env.SESSION_SECRET}`);
+  console.log(JSON.stringify(process.env, null, 2));
 
   // Configure cookie parsing middleware
   app.use(cookieParser());
