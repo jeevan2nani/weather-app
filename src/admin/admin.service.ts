@@ -17,19 +17,18 @@ export class AdminService {
         console.log(name)
         const iscity = await this.FindCity(name);
         console.log(iscity);
-        if(iscity === name){
-            console.log(`City name is : ${iscity}`);
+        console.log("Check");
+        if(iscity.length){
+            console.log(`City name is : ${iscity[0].name}`);
             // Convert to Json
             return {"Message":"City is already there in the Database!"};
         }
-        const city = await this.repo.create({name});
+        const city = this.repo.create({name});
         this.repo.save(city);
         return {"Message":" City is added to the DB"};
     }
-    async FindCity(name:string){
-        const city = await this.repo.find({where:{name:name}});
-        // console.log(city);
-        return city[0].name;
+    FindCity(name:string){
+        return this.repo.find({where:{name:name}}); 
     }
     async FindAll(){
         const cities =  await this.repo.find();

@@ -16,10 +16,10 @@ import { ConfigModule } from '@nestjs/config';
     {
       type:'postgres',
       // url: process.env.DATABASE_URL,
-      database:process.env.POSTGRESDB,
+      database:process.env.POSTGRES_DB,
       username:process.env.POSTGRES_USER,
       password:process.env.POSTGRES_PASSWORD,
-      host:"postgres",
+      host: "postgres",
       port:5432,
       entities:[City,Admin],
       synchronize:true,
