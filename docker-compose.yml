@@ -34,7 +34,7 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
   
-
+  
 
 volumes:
   app-data:

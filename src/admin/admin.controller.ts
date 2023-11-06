@@ -3,8 +3,10 @@ import { CitiesDto } from './dtos/cities.dto';
 import { AdminService } from './admin.service';
 import { Request } from 'express'
 import AdminDto from './dtos/admin.dto';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @Controller('admin')
+@ApiTags('admin')
 export class AdminController {
 
     constructor(private adminService: AdminService){};
@@ -12,9 +14,13 @@ export class AdminController {
     // SignUp
 
     @Post('/signup')
+    @ApiOperation({summary:"Admin Signup"})
+    @ApiBody({type:AdminDto,description:"Signup Body"})
+    @ApiResponse({status:200,description:'Admin Created Successful'})
+    @ApiResponse({status:401,description:"Unauthorized"})
     signup(@Body() body:AdminDto , @Req() req:Request){
         if(req.session.userId === undefined){
-            return {"Message":"Only Admins can Access this"};
+            throw new UnauthorizedException("Only Admins can Access this");
         }
         return this.adminService.createUser(body.email,body.password);
     }
@@ -22,14 +28,17 @@ export class AdminController {
     //SignIn
     // Add DTO for Sign in,Signup  -> Done
     @Post('/signin')
+    @ApiOperation({summary:"Admin Login"})
+    @ApiBody({type:AdminDto,description:"Login Body"})
+    @ApiResponse({status:200,description:'Admin Logged In Successful'})
+    @ApiResponse({status:401,description:"Unauthorized"})
     async signin(@Body() body:AdminDto, @Req() req: Request){
         const admin = await this.adminService.signin(body.email,body.password);
         if(admin) {
            req.session.userId = admin.id;
-            console.log(req.session.userId);
-            if(req.session.userId === undefined){
-                console.log("Check");
-            }
+        }
+        else{
+            throw new UnauthorizedException("Invalid Credentials");
         }
         console.log(admin);
         return admin;
@@ -37,13 +46,23 @@ export class AdminController {
 
     //Signout
     @Post('/signout')
+    @ApiOperation({summary:"Admin Logout"})
+    @ApiResponse({status:200,description:'Admin Logged out Successfully'})
+    @ApiResponse({status:401,description:"Unauthorized"})
     signout(@Req() req:Request){
+        if(req.session.userId === undefined){
+            throw new UnauthorizedException("Unauthorized");
+        }
         req.session.userId = undefined;
         return {"Message":"Logged Out Successfully"};
     }
 
 
     @Post('/add')
+    @ApiOperation({summary:"Adding Cities to DB"})
+    @ApiBody({type:CitiesDto,description:"City Body"})
+    @ApiResponse({status:200,description:'Admin Logged In Successful'})
+    @ApiResponse({status:401,description:"Unauthorized"})
     async addCity(@Body() body:CitiesDto, @Req() req:Request){
 
         console.log(body);
