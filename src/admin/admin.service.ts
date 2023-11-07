@@ -21,11 +21,11 @@ export class AdminService {
         if(iscity.length){
             console.log(`City name is : ${iscity[0].name}`);
             // Convert to Json
-            return {"Message":"City is already there in the Database!"};
+            return JSON.parse('{"Message":"City is already there in the Database!"}');
         }
         const city = this.repo.create({name});
         this.repo.save(city);
-        return {"Message":" City is added to the DB"};
+        return JSON.parse('{"Message":" City is added to the DB"}');
     }
     FindCity(name:string){
         return this.repo.find({where:{name:name}}); 

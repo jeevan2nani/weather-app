@@ -20,7 +20,7 @@ export class AdminController {
     @ApiResponse({status:401,description:"Unauthorized"})
     signup(@Body() body:AdminDto , @Req() req:Request){
         if(req.session.userId === undefined){
-            throw new UnauthorizedException("Only Admins can Access this");
+            return new UnauthorizedException("Only Admins can Access this");
         }
         return this.adminService.createUser(body.email,body.password);
     }
@@ -38,7 +38,7 @@ export class AdminController {
            req.session.userId = admin.id;
         }
         else{
-            throw new UnauthorizedException("Invalid Credentials");
+            return new UnauthorizedException("Invalid Credentials");
         }
         console.log(admin);
         return admin;
@@ -51,10 +51,10 @@ export class AdminController {
     @ApiResponse({status:401,description:"Unauthorized"})
     signout(@Req() req:Request){
         if(req.session.userId === undefined){
-            throw new UnauthorizedException("Unauthorized");
+            return new UnauthorizedException("Unauthorized");
         }
         req.session.userId = undefined;
-        return {"Message":"Logged Out Successfully"};
+        return JSON.parse('{"Message":"Logged Out Successfully"}');
     }
 
 
