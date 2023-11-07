@@ -16,7 +16,7 @@ export class AdminController {
     @Post('/signup')
     @ApiOperation({summary:"Admin Signup"})
     @ApiBody({type:AdminDto,description:"Signup Body"})
-    @ApiResponse({status:200,description:'Admin Created Successful'})
+    @ApiResponse({status:200,description:'Admin Created Successful',type:AdminDto})
     @ApiResponse({status:401,description:"Unauthorized"})
     signup(@Body() body:AdminDto , @Req() req:Request){
         if(req.session.userId === undefined){
