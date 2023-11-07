@@ -30,7 +30,7 @@ export class AdminController {
     @Post('/signin')
     @ApiOperation({summary:"Admin Login"})
     @ApiBody({type:AdminDto,description:"Login Body"})
-    @ApiResponse({status:200,description:'Admin Logged In Successful'})
+    @ApiResponse({status:200,description:'Admin Logged In Successful', type:AdminDto})
     @ApiResponse({status:401,description:"Unauthorized"})
     async signin(@Body() body:AdminDto, @Req() req: Request){
         const admin = await this.adminService.signin(body.email,body.password);
@@ -61,7 +61,7 @@ export class AdminController {
     @Post('/add')
     @ApiOperation({summary:"Adding Cities to DB"})
     @ApiBody({type:CitiesDto,description:"City Body"})
-    @ApiResponse({status:200,description:'Admin Logged In Successful'})
+    @ApiResponse({status:200,description:'City Added Successful'})
     @ApiResponse({status:401,description:"Unauthorized"})
     async addCity(@Body() body:CitiesDto, @Req() req:Request){
 
