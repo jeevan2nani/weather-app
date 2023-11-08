@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiOperation,ApiResponse } from '@nestjs/swagger';
@@ -13,5 +13,16 @@ export class UserController {
     getWeather(){
 
         return this.userService.getWeather();
+    }
+
+    @Get('/city')
+    getWeatherforCity(@Query('city') city:string){
+        console.log(city);
+        console.log("CHECK");
+        return this.userService.getWeatherforCity(city);
+    }
+    @Get('/all')
+    getAllCities(){
+        return this.userService.getAllCities();
     }
 }

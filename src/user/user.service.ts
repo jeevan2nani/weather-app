@@ -36,4 +36,19 @@ export class UserService {
     getApiKey(): string{
         return this.configService.get<string>('API_KEY');
     }
+
+    async getWeatherforCity(city){
+
+        const API_KEY = this.getApiKey();
+        const URL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`
+        console.log(URL);
+        const response = await axios.get(URL);
+        const obj = response.data.main;
+        obj['name'] = city;
+        console.log(obj);
+        return obj;
+    }
+    async getAllCities(){
+        return await this.adminService.FindAll();
+    }
 }
