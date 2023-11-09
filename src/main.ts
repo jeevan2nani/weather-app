@@ -20,7 +20,7 @@ async function bootstrap() {
   // Configure cookie parsing middleware
   app.use(cookieParser());
   app.enableCors({
-    origin:'http://localhost:3001',
+    origin:'http://localhost',
     credentials:true,
   });
 
@@ -35,6 +35,6 @@ async function bootstrap() {
 
   SwaggerModule.setup('api',app,document);
 
-  await app.listen(3000);
+  await app.listen(3005);
 }
 bootstrap();

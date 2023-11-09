@@ -9,9 +9,9 @@ services:
       - .env
     environment:
       NODE_ENV: development
-      PORT: 3000
+      PORT: 3005
     ports:
-      - "3000:3000"
+      - "3005:3005"
     volumes:
       - app-data:/app/data
   postgres:
@@ -24,11 +24,11 @@ services:
     volumes:
       - app-data:/var/lib/postgresql/data
   
-  nginx:
+  backend-nginx:
     image: nginx:latest
-    container_name: nginx_reverse_proxy
+    container_name: nginx_reverse_proxy_backend
     ports:
-      - "80:80"
+      - "8080:80"
     depends_on:
       - api
     volumes:
