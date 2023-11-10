@@ -38,7 +38,6 @@ export class UserService {
     }
 
     async getWeatherforCity(city){
-
         const API_KEY = this.getApiKey();
         const URL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`
         console.log(URL);

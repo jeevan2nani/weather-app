@@ -5,12 +5,13 @@ import { Request } from 'express'
 import AdminDto from './dtos/admin.dto';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Admin } from './admin.entity';
+import { AdminSessionService } from './admin.sessionService';
 
 @Controller('admin')
 @ApiTags('admin')
 export class AdminController {
 
-    constructor(private adminService: AdminService){};
+    constructor(private adminService: AdminService, private readonly adminSessionService:AdminSessionService){};
 
     // SignUp
 
@@ -20,9 +21,7 @@ export class AdminController {
     @ApiResponse({status:201,description:'Admin Created Successful',type:Admin})
     @ApiResponse({status:401,description:"Unauthorized"})
     signup(@Body() body:AdminDto , @Req() req:Request){
-        if(req.session.userId === undefined){
-            throw new UnauthorizedException("Only Admins can Access this");
-        }
+
         return this.adminService.createUser(body.email,body.password);
     }
 
@@ -35,12 +34,14 @@ export class AdminController {
     @ApiResponse({status:401,description:"Unauthorized"})
     async signin(@Body() body:AdminDto, @Req() req: Request){
         const admin = await this.adminService.signin(body.email,body.password);
-        if(admin) {
-           req.session.userId = admin.id;
-        }
-        else{
+        if(!admin){
             throw new UnauthorizedException("Invalid Credentials");
         }
+        req.session.user = {
+            userId: admin.id,
+            userEmail: admin.email,
+        }
+        this.adminSessionService.addAdminSession(admin.id,admin.email);
         console.log(admin);
         return admin;
     }
@@ -50,12 +51,21 @@ export class AdminController {
     @ApiOperation({summary:"Admin Logout"})
     @ApiResponse({status:201,description:'Admin Logged out Successfully'})
     @ApiResponse({status:401,description:"Unauthorized"})
-    signout(@Req() req:Request){
-        if(req.session.userId === undefined){
+    async signout(@Req() req:Request){
+        
+        if(req.session && req.session.user){
+            try {
+                await this.adminSessionService.deleteAdminSession(req.session.user.userId);
+                req.session.destroy();
+                console.log("Session Destroyed");
+                return JSON.parse('{"Message":"Logged Out Successfully"}');
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        else{
             throw new UnauthorizedException("Unauthorized");
         }
-        req.session.userId = undefined;
-        return JSON.parse('{"Message":"Logged Out Successfully"}');
     }
 
 
