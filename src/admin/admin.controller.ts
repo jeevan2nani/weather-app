@@ -7,7 +7,7 @@ import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Admin } from './admin.entity';
 import { AdminSessionService } from './admin.sessionService';
 
-@Controller('admin')
+@Controller('backend/admin')
 @ApiTags('admin')
 export class AdminController {
 
